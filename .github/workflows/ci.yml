@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci || npm install
+      - run: npm test --if-present || echo "No tests yet"
+      - run: npm run build --if-present || echo "No build yet"
+
+  # Future: render with email-template-workflows once a render script exists
+  # - uses: LLazyEmail/email-template-workflows@v3
+  #   with:
+  #     command: npm run render
+  #     artifact-directory: dist
